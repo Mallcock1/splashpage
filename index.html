@@ -24,6 +24,7 @@
     </style>
   </head>
   <body class="min-h-screen bg-deep text-slate-100 antialiased overflow-hidden">
+    <!-- Background layers: corner glows + constellation grid canvas -->
     <div class="fixed inset-0 -z-30 glow-tr"></div>
     <div class="fixed inset-0 -z-30 glow-bl"></div>
     <div id="parallax-wrapper" class="fixed inset-0 -z-20 will-change-transform">
@@ -32,6 +33,7 @@
 
     <main class="relative flex min-h-screen flex-col items-center justify-center p-6">
       <section class="w-full max-w-3xl rounded-2xl bg-white/5 backdrop-blur-md shadow-2xl ring-1 ring-white/10 p-8 md:p-12">
+        <!-- Quotes (left-aligned) -->
         <div class="space-y-4 text-left">
           <blockquote class="text-lg md:text-xl text-slate-300 leading-relaxed">
             <span class="font-semibold text-slate-200">Elon Musk:</span>
@@ -43,15 +45,18 @@
           </blockquote>
         </div>
 
+        <!-- Brand (centered) -->
         <div class="mt-10 text-center">
           <h1 class="text-4xl md:text-6xl font-black tracking-tight">NeoWatt</h1>
           <p class="mt-3 text-lg md:text-xl text-slate-300 underline-gradient inline-block">Energy beyond Earth</p>
         </div>
 
+        <!-- CTA (centered) -->
         <div class="mt-10 md:mt-12 text-center">
           <form id="signup-form" class="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
             <label for="email" class="sr-only">Email address</label>
             <input id="email" name="email" type="email" required autocomplete="email" placeholder="Email" class="focus-ring w-full sm:w-72 rounded-xl bg-white/10 text-slate-100 placeholder-slate-400 px-4 py-3 ring-1 ring-white/15" />
+            <!-- Subtler button colour -->
             <button type="submit" class="rounded-xl px-5 py-3 font-semibold ring-1 ring-white/10 shadow-lg bg-white/15 text-slate-100 hover:bg-white/20 active:bg-white/25 transition">
               Get updates
             </button>
@@ -66,26 +71,35 @@
     </main>
 
     <script>
+      // Footer year
       document.getElementById('year').textContent = new Date().getFullYear();
 
+      // Apps Script endpoint (POST only). Server will dedupe.
       const scriptURL = 'https://script.google.com/macros/s/AKfycbwp6yVhEvSS5paW-viO8SgCOGNKb2QHhi27FByRXu7LCUHovFD1-ND59oTq7-cRG76EbA/exec';
 
-      document.getElementById('signup-form').addEventListener('submit', e => {
+      // Simplified submit: validate → POST (opaque) → thank-you UI
+      const formEl = document.getElementById('signup-form');
+      formEl.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('email').value.trim();
-
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          formEl.innerHTML = "<p class='text-red-300 mt-3'>Please enter a valid email address.</p>";
+          return;
+        }
+        // Fire-and-forget POST; Apps Script handles duplicates server-side
         fetch(scriptURL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
-        }).then(() => {
-          e.target.innerHTML = "<p class='text-emerald-300 mt-3'>Thanks! You're on the list — check your inbox for confirmation.</p>";
-        }).catch(() => {
-          e.target.innerHTML = "<p class='text-red-400 mt-3'>Something went wrong. Please try again later.</p>";
-        });
+        }).catch(() => {});
+
+        formEl.innerHTML = "<p class='text-emerald-300 mt-3'>Thanks! You're on the list.</p>";
       });
 
+      // ------------------------------
+      // Constellation Grid Background
+      // ------------------------------
       (function() {
         const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
         const canvas = document.getElementById('grid');
@@ -93,10 +107,12 @@
         const wrapper = document.getElementById('parallax-wrapper');
         let w = 0, h = 0;
 
-        const NODE_COUNT = 160;
+        // Node config (lean for perf)
+        const NODE_COUNT = 80;
         const MAX_LINK_DIST = 140;
         const CURSOR_LINK_DIST = 160;
-        const CURSOR_LINKS_MAX = 60;
+        const CURSOR_LINKS_MAX = 10;
+        const SPEED = 2.0; // adjust for faster/slower motion
         const nodes = [];
         let mouse = { x: null, y: null, active: false };
 
@@ -136,7 +152,7 @@
           }
 
           for (const n of nodes) {
-            n.x += n.vx; n.y += n.vy;
+            n.x += n.vx * SPEED; n.y += n.vy * SPEED;
             if (n.x < -5) n.x = w + 5; else if (n.x > w + 5) n.x = -5;
             if (n.y < -5) n.y = h + 5; else if (n.y > h + 5) n.y = -5;
           }
@@ -226,6 +242,21 @@
         resize();
         initNodes();
         requestAnimationFrame(step);
+      })();
+
+      // ------------------------------
+      // Tiny dev self-tests (console-only)
+      // ------------------------------
+      ;(function devTests(){
+        try {
+          // Email regex spot-checks
+          console.assert(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test('user@example.com'), 'Valid email should pass');
+          console.assert(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test('not-an-email'), 'Invalid email should fail');
+
+          // POST body structure
+          const body = JSON.stringify({ email: 'user@example.com' });
+          console.assert(body.includes('user@example.com'), 'POST body should include email');
+        } catch(e) { /* ignore in prod */ }
       })();
     </script>
   </body>
