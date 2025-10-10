@@ -61,12 +61,14 @@
               Get updates
             </button>
           </form>
-          <p class="mt-2 text-xs text-slate-400">Major updates only — no spam.</p>
         </div>
       </section>
 
-      <footer class="mt-8 text-xs text-slate-500 text-center">
-        © <span id="year"></span> NeoWatt · <a href="mailto:matthew.allcock@neowatt.co.uk">matthew.allcock@neowatt.co.uk</a>
+      <footer class="mt-8 text-xs text-slate-500 text-center flex items-center justify-center gap-1 flex-wrap">
+        © <span id="year"></span> NeoWatt · 
+        <a href="mailto:matthew.allcock@neowatt.co.uk">matthew.allcock@neowatt.co.uk</a>
+        · Supported by
+        <img src="UKSA_logo.png" alt="UK Space Agency Logo" style="width: 70px; vertical-align: middle; margin-left: 0.3em;" />
       </footer>
     </main>
 
@@ -94,7 +96,7 @@
           body: JSON.stringify({ email })
         }).catch(() => {});
 
-        formEl.innerHTML = "<p class='text-emerald-300 mt-3'>Thanks! You're on the list.</p>";
+        formEl.innerHTML = "<p class='text-emerald-300 mt-3'>Thanks! We'll send you updates.</p>";
       });
 
       // ------------------------------
