@@ -3,24 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NeoWatt</title>
-    <meta name="description" content="NeoWatt - Energy beyond Earth" />
+    <title>NEOWATT</title>
+    <meta name="description" content="NEOWATT" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Swap Inter -> Rajdhani -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root { color-scheme: dark; }
       html, body { height: 100%; }
-      body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans"; }
-      .bg-deep { background-color: #0b1020; }
-      .glow-bl { background: radial-gradient(55% 55% at 0% 100%, rgba(34,197,94,0.18), rgba(34,197,94,0) 60%); }
-      .glow-tr { background: radial-gradient(55% 55% at 100% 0%, rgba(249,115,22,0.18), rgba(249,115,22,0) 60%); }
-      .underline-gradient { background-image: linear-gradient(to right, rgba(249,115,22,0.9), rgba(34,197,94,0.9)); background-size: 100% 2px; background-repeat: no-repeat; background-position: 0 100%; }
-      .focus-ring:focus { outline: none; box-shadow: 0 0 0 4px rgba(255,255,255,0.08); }
+      /* Apply Rajdhani and update brand palette */
+      body { font-family: "Rajdhani", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans"; letter-spacing: 0.01em; }
+      .bg-deep { background-color: #0b1530; }
+      /* Purple brand glows */
+      .glow-bl { background: radial-gradient(60% 60% at 0% 100%, rgba(124,108,246,0.22), rgba(124,108,246,0) 65%); }
+      .glow-tr { background: radial-gradient(60% 60% at 100% 0%, rgba(177,139,252,0.18), rgba(177,139,252,0) 65%); }
+      .underline-gradient { background-image: linear-gradient(to right, rgba(124,108,246,0.95), rgba(177,139,252,0.95)); background-size: 100% 2px; background-repeat: no-repeat; background-position: 0 100%; }
+      .focus-ring:focus { outline: none; box-shadow: 0 0 0 4px rgba(124,108,246,0.25); }
       canvas { display:block; }
-      a { color: #9bd7ff; }
-      a:hover { text-decoration: underline; }
+      /* Brand link color */
+      a { color: #b9a9ff; }
+      a:hover { color: #d3caff; text-decoration: underline; }
     </style>
   </head>
   <body class="min-h-screen bg-deep text-slate-100 antialiased overflow-hidden">
@@ -40,24 +44,30 @@
             <a href="https://www.youtube.com/watch?v=9YZVAMh8b0s" target="_blank" rel="noopener" class="text-slate-200 no-underline">“Space solar power, the stupidest thing ever”</a>
           </blockquote>
           <blockquote class="text-xl md:text-2xl text-slate-200 font-semibold leading-relaxed">
-            <span>NeoWatt:</span>
+            <span>NEOWATT:</span>
             <span class="ml-2">“Hold my beer”</span>
           </blockquote>
         </div>
 
         <!-- Brand (centered) -->
         <div class="mt-10 text-center">
-          <h1 class="text-4xl md:text-6xl font-black tracking-tight">NeoWatt</h1>
-          <p class="mt-3 text-lg md:text-xl text-white inline-block">Energy beyond Earth</p>
+          <!-- Keep H1 for SEO, hide visually -->
+          <h1 class="sr-only">NEOWATT</h1>
+          <!-- Use provided logo (no glow) -->
+          <img
+            src="logo_icon-text_dark.svg"
+            alt="NEOWATT"
+            class="mx-auto w-[260px] md:w-[460px] h-auto" />
+          <p class="mt-4 text-lg md:text-xl text-slate-200 inline-block">A new paradigm in space power</p>
         </div>
 
         <!-- CTA (centered) -->
         <div class="mt-10 md:mt-12 text-center">
           <form id="signup-form" class="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
             <label for="email" class="sr-only">Email address</label>
-            <input id="email" name="email" type="email" required autocomplete="email" placeholder="Email" class="focus-ring w-full sm:w-72 rounded-xl bg-white/10 text-slate-100 placeholder-slate-400 px-4 py-3 ring-1 ring-white/15" />
-            <!-- Subtler button colour -->
-            <button type="submit" class="rounded-xl px-5 py-3 font-semibold ring-1 ring-white/10 shadow-lg bg-white/15 text-slate-100 hover:bg-white/20 active:bg-white/25 transition">
+            <input id="email" name="email" type="email" required autocomplete="email" placeholder="Email" class="focus-ring w-full sm:w-72 rounded-xl bg-white/10 text-slate-100 placeholder-slate-400 px-4 py-3 ring-1 ring-white/15 focus:ring-2 focus:ring-[#7c73e6]/40" />
+            <!-- Brand purple button -->
+            <button type="submit" class="rounded-xl px-5 py-3 font-semibold shadow-lg bg-[#7c73e6] text-white hover:bg-[#8a82f0] active:bg-[#6e65dc] focus:outline-none focus:ring-2 focus:ring-[#7c73e6]/40 transition">
               Get updates
             </button>
           </form>
@@ -65,7 +75,7 @@
       </section>
 
       <footer class="mt-8 text-xs text-slate-500 text-center flex items-center justify-center gap-1 flex-wrap">
-        © <span id="year"></span> NeoWatt Ltd · 
+        © <span id="year"></span> NEOWATT Ltd · 
         <a href="mailto:matthew.allcock@neowatt.co.uk">matthew.allcock@neowatt.co.uk</a>
         · Supported by
         <img src="UKSA_logo.png" alt="UK Space Agency Logo" style="width: 70px; vertical-align: middle; margin-left: 0.3em;" />
@@ -114,7 +124,7 @@
         const MAX_LINK_DIST = 140;
         const CURSOR_LINK_DIST = 160;
         const CURSOR_LINKS_MAX = 10;
-        const SPEED = 2.0; // adjust for faster/slower motion
+        const SPEED = 2.0;
         const nodes = [];
         let mouse = { x: null, y: null, active: false };
 
@@ -139,7 +149,8 @@
               vx: rand(-0.05, 0.05),
               vy: rand(-0.05, 0.05),
               r: rand(0.6, 1.6),
-              hue: Math.random() < 0.25 ? 32 : 0,
+              // mark some nodes as brand-accent
+              accent: Math.random() < 0.25
             });
           }
         }
@@ -203,8 +214,9 @@
               ctx.lineTo(n.x, n.y);
               ctx.lineWidth = 1.1;
               ctx.globalAlpha = Math.min(0.55, 0.15 + alpha * 0.6);
-              ctx.strokeStyle = 'rgba(255,200,120,1)';
-              ctx.shadowColor = 'rgba(255,170,80,0.35)';
+              // brand purple highlight for cursor links
+              ctx.strokeStyle = 'rgba(124,108,246,1)';
+              ctx.shadowColor = 'rgba(124,108,246,0.5)';
               ctx.shadowBlur = 4;
               ctx.stroke();
               ctx.shadowBlur = 0;
@@ -212,12 +224,12 @@
             }
           }
 
+          // Node dots with subtle purple accents
           for (const n of nodes) {
             ctx.beginPath();
             ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-            const color = n.hue === 32 ? 'rgba(255,173,94,0.95)' : 'rgba(255,255,255,0.9)';
-            ctx.fillStyle = color;
-            ctx.shadowColor = n.hue === 32 ? 'rgba(255,160,80,0.45)' : 'rgba(255,255,255,0.25)';
+            ctx.fillStyle = n.accent ? 'rgba(124,108,246,0.95)' : 'rgba(255,255,255,0.9)';
+            ctx.shadowColor = n.accent ? 'rgba(124,108,246,0.45)' : 'rgba(255,255,255,0.25)';
             ctx.shadowBlur = 6;
             ctx.fill();
             ctx.shadowBlur = 0;
