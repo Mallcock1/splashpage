@@ -16,9 +16,6 @@
       /* Apply Rajdhani and update brand palette */
       body { font-family: "Rajdhani", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans"; letter-spacing: 0.01em; }
       .bg-deep { background-color: #0b1530; }
-      /* Purple brand glows */
-      .glow-bl { background: radial-gradient(60% 60% at 0% 100%, rgba(124,108,246,0.22), rgba(124,108,246,0) 65%); }
-      .glow-tr { background: radial-gradient(60% 60% at 100% 0%, rgba(177,139,252,0.18), rgba(177,139,252,0) 65%); }
       .underline-gradient { background-image: linear-gradient(to right, rgba(124,108,246,0.95), rgba(177,139,252,0.95)); background-size: 100% 2px; background-repeat: no-repeat; background-position: 0 100%; }
       .focus-ring:focus { outline: none; box-shadow: 0 0 0 4px rgba(124,108,246,0.25); }
       canvas { display:block; }
@@ -28,9 +25,7 @@
     </style>
   </head>
   <body class="min-h-screen bg-deep text-slate-100 antialiased overflow-hidden">
-    <!-- Background layers: corner glows + constellation grid canvas -->
-    <div class="fixed inset-0 -z-30 glow-tr"></div>
-    <div class="fixed inset-0 -z-30 glow-bl"></div>
+    <!-- Background layers: constellation grid canvas (corner glows removed) -->
     <div id="parallax-wrapper" class="fixed inset-0 -z-20 will-change-transform">
       <canvas id="grid" class="w-full h-full"></canvas>
     </div>
@@ -61,7 +56,7 @@
           <p class="mt-4 text-lg md:text-xl text-slate-200 inline-block">A new paradigm in space power</p>
         </div>
 
-        <!-- CTA (centered)  -->
+        <!-- CTA (centered) -->
         <div class="mt-10 md:mt-12 text-center">
           <form id="signup-form" class="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
             <label for="email" class="sr-only">Email address</label>
@@ -185,8 +180,9 @@
                 ctx.lineTo(b.x, b.y);
                 ctx.lineWidth = 1;
                 ctx.globalAlpha = alpha * 0.35;
-                ctx.strokeStyle = 'rgba(255,255,255,1)';
-                ctx.shadowColor = 'rgba(255,180,80,0.15)';
+                // warm white/yellow beam
+                ctx.strokeStyle = 'rgba(255, 248, 210, 1)';
+                ctx.shadowColor = 'rgba(255, 210, 90, 0.25)';
                 ctx.shadowBlur = 2;
                 ctx.stroke();
                 ctx.shadowBlur = 0;
@@ -214,9 +210,9 @@
               ctx.lineTo(n.x, n.y);
               ctx.lineWidth = 1.1;
               ctx.globalAlpha = Math.min(0.55, 0.15 + alpha * 0.6);
-              // brand purple highlight for cursor links
-              ctx.strokeStyle = 'rgba(124,108,246,1)';
-              ctx.shadowColor = 'rgba(124,108,246,0.5)';
+              // warm white/yellow energy highlight for cursor links
+              ctx.strokeStyle = 'rgba(255, 244, 160, 1)';
+              ctx.shadowColor = 'rgba(255, 210, 90, 0.6)';
               ctx.shadowBlur = 4;
               ctx.stroke();
               ctx.shadowBlur = 0;
@@ -224,12 +220,12 @@
             }
           }
 
-          // Node dots with subtle purple accents
+          // Node dots with starry yellow accents
           for (const n of nodes) {
             ctx.beginPath();
             ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-            ctx.fillStyle = n.accent ? 'rgba(124,108,246,0.95)' : 'rgba(255,255,255,0.9)';
-            ctx.shadowColor = n.accent ? 'rgba(124,108,246,0.45)' : 'rgba(255,255,255,0.25)';
+            ctx.fillStyle = n.accent ? 'rgba(255, 230, 140, 0.95)' : 'rgba(255, 255, 255, 0.9)';
+            ctx.shadowColor = n.accent ? 'rgba(255, 210, 90, 0.5)' : 'rgba(255, 255, 255, 0.25)';
             ctx.shadowBlur = 6;
             ctx.fill();
             ctx.shadowBlur = 0;
