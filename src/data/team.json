@@ -1,0 +1,23 @@
+[
+  {
+    "id": "matthew-allcock",
+    "name": "Matthew Allcock",
+    "role": "Founder & CEO",
+    "bio": "Leads NeoWatt strategy, product execution, and partner development across mission and commercial tracks.",
+    "photoPath": "/NEOWATT_logo.png",
+    "links": [
+      {
+        "label": "Email",
+        "url": "mailto:matthew.allcock@neowatt.co.uk"
+      }
+    ]
+  },
+  {
+    "id": "engineering-core",
+    "name": "Engineering Core",
+    "role": "Power, RF, and Systems",
+    "bio": "Cross-functional team focused on transmission, electronics integration, and mission-grade reliability engineering.",
+    "photoPath": "/logo_icon-text_dark.svg",
+    "links": []
+  }
+]

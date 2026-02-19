@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "tagline": "Energy beyond Earth"
+  },
+  "hero": {
+    "title": "Energy beyond Earth",
+    "subtitle": "NeoWatt is engineering resilient, high-efficiency orbital power systems that expand mission range, reliability, and operational endurance."
+  },
+  "vision": {
+    "title": "Build the power backbone of the space economy",
+    "body": "Our vision is a modular energy platform that scales from single spacecraft missions to persistent multi-node orbital infrastructure. We are focused on precision power delivery, robust thermal and RF performance, and production-ready architecture."
+  },
+  "problem": {
+    "title": "Space missions are constrained by fragile power assumptions",
+    "body": "Existing systems often trade reliability, transmission efficiency, or integration speed. As orbital operations become continuous and distributed, power has to move from a subsystem to a strategic capability with higher endurance, tighter control loops, and mission-adaptive redundancy."
+  },
+  "technology": {
+    "title": "Transmission-led architecture with system-level control",
+    "body": "NeoWatt combines high-integrity power electronics, transmission-aware design, and software-assisted operational control. The result is a platform engineered for predictable performance in dynamic orbital conditions.",
+    "features": [
+      {
+        "title": "Adaptive RF Pathing",
+        "description": "Transmission chain tuning to maintain efficient delivery through changing orbital geometry and thermal conditions."
+      },
+      {
+        "title": "Fault-Tolerant Energy Core",
+        "description": "Redundant topology for graceful degradation and continuity under component-level disruptions."
+      },
+      {
+        "title": "Mission-Aware Controls",
+        "description": "Real-time diagnostics and control strategies aligned to mission phase and load profile."
+      }
+    ]
+  },
+  "roadmap": {
+    "title": "Milestones from validation to deployment",
+    "body": "A staged roadmap focused on de-risking transmission performance, hardening system architecture, and accelerating route-to-orbit execution."
+  },
+  "supporters": {
+    "title": "Backed by high-trust partners",
+    "body": "NeoWatt is supported by organisations helping translate deep engineering into deployable capability."
+  },
+  "team": {
+    "title": "Cross-disciplinary team for mission-critical systems",
+    "body": "Our team spans power systems, RF engineering, software, and space mission operations to deliver an integrated product."
+  },
+  "contact": {
+    "title": "Work with us",
+    "body": "Join our update list for technical milestones, programme progress, and collaboration announcements."
+  }
+}

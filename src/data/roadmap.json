@@ -1,0 +1,29 @@
+[
+  {
+    "id": "rmf",
+    "phase": "Phase 1",
+    "quarter": "Q1",
+    "year": 2026,
+    "title": "RF and power subsystem validation",
+    "status": "In progress",
+    "description": "Complete subsystem tests for transmission stability, conversion efficiency, and environmental tolerance."
+  },
+  {
+    "id": "integrated-prototype",
+    "phase": "Phase 2",
+    "quarter": "Q2",
+    "year": 2026,
+    "title": "Integrated prototype completion",
+    "status": "Planned",
+    "description": "Assemble and verify first integrated NeoWatt architecture with closed-loop controls and thermal envelope checks."
+  },
+  {
+    "id": "mission-readiness",
+    "phase": "Phase 3",
+    "quarter": "Q4",
+    "year": 2026,
+    "title": "Mission-readiness qualification",
+    "status": "Planned",
+    "description": "Execute qualification plan and partner integration track to prepare for first orbital deployment window."
+  }
+]

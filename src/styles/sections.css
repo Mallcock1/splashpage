@@ -1,0 +1,117 @@
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: min(14vh, 8rem);
+  overflow: clip;
+}
+
+.hero-scene-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#hero-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, rgba(132, 121, 208, 0.26), transparent 65%),
+    linear-gradient(180deg, rgba(7, 14, 33, 0.3), rgba(7, 14, 33, 0.9));
+}
+
+.hero-fallback img {
+  width: min(420px, 75vw);
+  opacity: 0.82;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: min(860px, 100%);
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 7vw, 5.1rem);
+  line-height: 1.04;
+  max-width: 16ch;
+}
+
+.hero .lead {
+  margin-top: 1.15rem;
+  color: rgba(238, 242, 255, 0.9);
+}
+
+.hero-actions {
+  margin-top: 1.45rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+section h2 {
+  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  line-height: 1.1;
+  margin-bottom: 0.8rem;
+}
+
+section p {
+  line-height: 1.74;
+}
+
+.supporter-logo {
+  background: var(--color-bg-tint);
+  border-radius: 10px;
+  min-height: 80px;
+  padding: 1rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(57, 69, 99, 0.12);
+}
+
+.supporter-logo img {
+  max-height: 56px;
+  width: auto;
+}
+
+.person-name {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.person-role {
+  font-size: 0.92rem;
+  color: rgba(238, 242, 255, 0.8);
+  margin-bottom: 0.6rem;
+}
+
+.section-light .person-role {
+  color: rgba(15, 24, 53, 0.72);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem 0.55rem;
+  border-radius: 99px;
+  background: rgba(132, 121, 208, 0.15);
+  color: var(--color-accent-shadow);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    align-items: center;
+    padding-bottom: 3rem;
+  }
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "uksa",
+    "name": "UK Space Agency",
+    "logoPath": "/UKSA_logo.png",
+    "url": "https://www.gov.uk/government/organisations/uk-space-agency",
+    "tier": "Agency"
+  },
+  {
+    "id": "espark",
+    "name": "e-spark",
+    "logoPath": "/e-spark.png",
+    "url": "https://www.e-spark.co.uk/",
+    "tier": "Programme"
+  }
+]
