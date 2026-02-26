@@ -6,6 +6,7 @@ import supporters from "../data/supporters.json";
 import team from "../data/team.json";
 
 import { bindEmailCaptureForm } from "./form-email-capture";
+import { initCapabilitiesUnlocked } from "./capabilities/capabilities-unlocked";
 import { initStickyNav } from "./nav-sticky";
 import { initScrollReveal } from "./scroll-reveal";
 import { initSectionObserver } from "./scroll-progress";
@@ -28,7 +29,7 @@ function hydrateCopy() {
     }
   });
 
-  const titleText = `NeoWatt | ${content.meta.tagline}`;
+  const titleText = `NEOWATT | ${content.meta.tagline}`;
   document.title = titleText;
 
   const ogTitle = document.querySelector('meta[property="og:title"]');
@@ -38,17 +39,50 @@ function hydrateCopy() {
 }
 
 function renderTechnology() {
-  const grid = document.getElementById("technology-grid");
-  if (!grid) {
+  const stepsEl = document.getElementById("technology-flow-steps");
+  const diagramEl = document.getElementById("technology-flow-diagram");
+  const copyEl = document.getElementById("technology-flow-copy");
+  const flow = content.technology.flow || [];
+
+  if (!stepsEl || !diagramEl || !copyEl || !flow.length) {
     return;
   }
 
-  content.technology.features.forEach((feature) => {
-    const card = document.createElement("article");
-    card.className = "card";
-    card.innerHTML = `<h3>${feature.title}</h3><p>${feature.description}</p>`;
-    grid.append(card);
-  });
+  function renderActive(activeId) {
+    stepsEl.innerHTML = flow
+      .map(
+        (step) =>
+          `<button class="tech-step${step.id === activeId ? " is-active" : ""}" type="button" data-step-id="${step.id}">${step.label}</button>`
+      )
+      .join("");
+
+    diagramEl.innerHTML = flow
+      .map((step, idx) => {
+        const isActive = step.id === activeId;
+        const connector = idx < flow.length - 1 ? `<span class="tech-connector" aria-hidden="true"></span>` : "";
+        return `
+          <div class="tech-node-wrap">
+            <article class="tech-node${isActive ? " is-active" : ""}">
+              <h3>${step.label}</h3>
+              <p>${step.infra}</p>
+            </article>
+            ${connector}
+          </div>
+        `;
+      })
+      .join("");
+
+    const active = flow.find((step) => step.id === activeId);
+    copyEl.textContent = active ? active.copy : "";
+
+    stepsEl.querySelectorAll("[data-step-id]").forEach((button) => {
+      button.addEventListener("click", () => {
+        renderActive(button.getAttribute("data-step-id") || flow[0].id);
+      });
+    });
+  }
+
+  renderActive(flow[0].id);
 }
 
 function renderRoadmap() {
@@ -58,13 +92,17 @@ function renderRoadmap() {
   }
 
   roadmap.forEach((item) => {
+    const timelineLabel = item.quarter ? `${item.quarter} ${item.year}` : String(item.year);
+    const statusMarkup = item.status ? `<p class="status-pill">${item.status}</p>` : "";
+    const descriptionMarkup = item.description ? `<p>${item.description}</p>` : "";
+
     const li = document.createElement("li");
     li.innerHTML = `
-      <div class="timeline-meta">${item.quarter} ${item.year}</div>
+      <div class="timeline-meta">${timelineLabel}</div>
       <div>
-        <p class="status-pill">${item.status}</p>
+        ${statusMarkup}
         <h3>${item.title}</h3>
-        <p>${item.description}</p>
+        ${descriptionMarkup}
       </div>
     `;
     list.append(li);
@@ -78,16 +116,18 @@ function renderSupporters() {
   }
 
   supporters.forEach((entry) => {
-    const card = document.createElement("article");
-    card.className = "card";
-    card.innerHTML = `
-      <p class="status-pill">${entry.tier}</p>
-      <h3>${entry.name}</h3>
-      <a class="supporter-logo" href="${entry.url}" target="_blank" rel="noreferrer">
+    const logo = document.createElement(entry.url && entry.url !== "#" ? "a" : "div");
+    logo.className = "supporter-logo";
+    logo.setAttribute("aria-label", entry.name);
+    if (entry.url && entry.url !== "#") {
+      logo.href = entry.url;
+      logo.target = "_blank";
+      logo.rel = "noreferrer";
+    }
+    logo.innerHTML = `
         <img src="${entry.logoPath}" alt="${entry.name} logo" loading="lazy" />
-      </a>
     `;
-    grid.append(card);
+    grid.append(logo);
   });
 }
 
@@ -101,13 +141,17 @@ function renderTeam() {
     const links = person.links
       .map((link) => `<a class="text-link" href="${link.url}">${link.label}</a>`)
       .join(" ");
+    const highlights = (person.highlights || [])
+      .map((item) => `<li>${item}</li>`)
+      .join("");
 
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
+      <img class="team-photo" src="${person.photoPath}" alt="${person.name}" loading="lazy" onerror="this.src='/assets/images/team/cofounder-placeholder.svg'" />
       <h3 class="person-name">${person.name}</h3>
       <p class="person-role">${person.role}</p>
-      <p>${person.bio}</p>
+      ${highlights ? `<ul class="person-highlights">${highlights}</ul>` : ""}
       ${links ? `<p>${links}</p>` : ""}
     `;
     grid.append(card);
@@ -141,12 +185,51 @@ function initHeroVisual() {
   createHeroScrollSync("#hero", controller);
 }
 
+function initHeroCopyMotion() {
+  const hero = document.getElementById("hero");
+  const heroContent = hero?.querySelector(".hero-content");
+  if (!hero || !heroContent) {
+    return;
+  }
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) {
+    return;
+  }
+
+  let rafId = 0;
+
+  const onScroll = () => {
+    if (rafId) {
+      return;
+    }
+
+    rafId = window.requestAnimationFrame(() => {
+      const rect = hero.getBoundingClientRect();
+      const total = Math.max(window.innerHeight * 1.2, 1);
+      const traveled = Math.max(0, -rect.top);
+      const progress = Math.min(traveled / total, 1);
+
+      const shiftPx = progress * -22;
+      const fade = 1 - progress * 0.2;
+      heroContent.style.setProperty("--hero-copy-shift", `${shiftPx.toFixed(2)}px`);
+      heroContent.style.setProperty("--hero-copy-fade", fade.toFixed(3));
+      rafId = 0;
+    });
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  onScroll();
+}
+
 function initApp() {
   hydrateCopy();
   renderTechnology();
   renderRoadmap();
   renderSupporters();
   renderTeam();
+  initCapabilitiesUnlocked();
 
   const year = document.getElementById("year");
   if (year) {
@@ -155,17 +238,19 @@ function initApp() {
 
   initStickyNav({ heroSelector: "#hero", navSelector: "#site-header" });
   initSectionObserver([
-    "#vision",
     "#problem",
+    "#vision",
     "#technology",
+    "#capabilities",
     "#roadmap",
-    "#supporters",
     "#team",
+    "#supporters",
     "#contact"
   ]);
 
   initScrollReveal();
   initHeroVisual();
+  initHeroCopyMotion();
 
   const form = document.getElementById("signup-form");
   bindEmailCaptureForm(form, SCRIPT_URL);

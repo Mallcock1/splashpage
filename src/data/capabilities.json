@@ -1,0 +1,37 @@
+﻿[
+  {
+    "id": "payload-efficiency",
+    "title": "Higher payload yield per mission",
+    "description": "Reduce onboard generation overhead and reallocate mass and volume to mission payload.",
+    "impact": "Lower bus burden, higher mission economics",
+    "segments": ["satellite-operators", "defence-security"]
+  },
+  {
+    "id": "lunar-night-uptime",
+    "title": "Continuous lunar night operations",
+    "description": "Maintain power through prolonged darkness with beamed delivery from relay assets.",
+    "impact": "Higher uptime for critical surface assets",
+    "segments": ["lunar-infra", "defence-security"]
+  },
+  {
+    "id": "constellation-trading",
+    "title": "Constellation power trading",
+    "description": "Sell surplus power between nodes and purchase additional power during high-demand windows.",
+    "impact": "Less wasted energy, fewer curtailed operations",
+    "segments": ["satellite-operators", "in-space-manufacturing"]
+  },
+  {
+    "id": "distributed-resilience",
+    "title": "Distributed energy resilience",
+    "description": "Route power across networked orbital assets to sustain service through localized faults.",
+    "impact": "Improved mission assurance and service continuity",
+    "segments": ["satellite-operators", "defence-security", "lunar-infra"]
+  },
+  {
+    "id": "new-market-enablement",
+    "title": "Enable new off-Earth business models",
+    "description": "Support power-intensive operations where local generation is impractical or inefficient.",
+    "impact": "Unlocks scalable in-space industry opportunities",
+    "segments": ["in-space-manufacturing", "lunar-infra"]
+  }
+]

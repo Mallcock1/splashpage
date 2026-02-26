@@ -1,0 +1,22 @@
+﻿[
+  {
+    "id": "all",
+    "label": "All Segments"
+  },
+  {
+    "id": "satellite-operators",
+    "label": "Satellite operators"
+  },
+  {
+    "id": "defence-security",
+    "label": "Defence & security"
+  },
+  {
+    "id": "lunar-infra",
+    "label": "Lunar infrastructure"
+  },
+  {
+    "id": "in-space-manufacturing",
+    "label": "In-space industry"
+  }
+]

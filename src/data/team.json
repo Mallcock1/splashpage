@@ -2,22 +2,32 @@
   {
     "id": "matthew-allcock",
     "name": "Matthew Allcock",
-    "role": "Founder & CEO",
-    "bio": "Leads NeoWatt strategy, product execution, and partner development across mission and commercial tracks.",
-    "photoPath": "/NEOWATT_logo.png",
+    "role": "Co-founder",
+    "highlights": [
+      "Decade of experience in space and energy.",
+      "PhD in solar physics.",
+      "Space weather risk and environment modelling.",
+      "Space systems engineering and critical infrastructure."
+    ],
+    "photoPath": "/assets/images/team/matthew-allcock.jpg",
     "links": [
       {
         "label": "Email",
-        "url": "mailto:matthew.allcock@neowatt.co.uk"
+        "url": "mailto:contact@neowatt.co.uk"
       }
     ]
   },
   {
-    "id": "engineering-core",
-    "name": "Engineering Core",
-    "role": "Power, RF, and Systems",
-    "bio": "Cross-functional team focused on transmission, electronics integration, and mission-grade reliability engineering.",
-    "photoPath": "/logo_icon-text_dark.svg",
+    "id": "cofounder-stealth",
+    "name": "Co-founder (Stealth)",
+    "role": "Co-founder",
+    "highlights": [
+      "RF engineering.",
+      "Particle accelerator physics.",
+      "Satcom product engineering.",
+      "Scaling innovative space technology."
+    ],
+    "photoPath": "/assets/images/team/cofounder-placeholder.svg",
     "links": []
   }
 ]

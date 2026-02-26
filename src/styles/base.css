@@ -3,6 +3,7 @@
 @import "./layout.css";
 @import "./components.css";
 @import "./sections.css";
+@import "./visuals.css";
 @import "./motion.css";
 
 * {
