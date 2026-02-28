@@ -1,0 +1,53 @@
+name: Build Preview Sites
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish-previews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build 6 preview variants
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf preview-dist
+          mkdir -p preview-dist/previews
+
+          variants=(preview-0 preview-1 preview-2 preview-3 preview-4 preview-5)
+
+          for variant in "${variants[@]}"; do
+            echo "Building ${variant}..."
+            VITE_PREVIEW_VARIANT="${variant}" npm run build -- --base "/previews/${variant}/"
+            mkdir -p "preview-dist/previews/${variant}"
+            cp -R dist/. "preview-dist/previews/${variant}/"
+            mkdir -p "preview-dist/previews/${variant}/assets"
+            cp -R assets/. "preview-dist/previews/${variant}/assets/"
+          done
+
+      - name: Publish previews to gh-pages /previews
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./preview-dist/previews
+          destination_dir: previews
+          keep_files: true

@@ -233,6 +233,38 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
+.team-grid .card {
+  display: grid;
+  grid-template-columns: minmax(90px, 120px) 1fr;
+  align-items: start;
+  column-gap: 1rem;
+}
+
+.team-growth-callout {
+  margin-top: 1.2rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(198, 193, 238, 0.32);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(132, 121, 208, 0.2), transparent 52%),
+    rgba(9, 18, 40, 0.78);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.team-growth-callout h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+}
+
+.team-growth-callout p {
+  margin: 0;
+  color: rgba(238, 242, 255, 0.92);
+  line-height: 1.55;
+}
+
 .section-light .card {
   background: var(--color-bg-tint);
   border-color: rgba(57, 69, 99, 0.18);
@@ -263,7 +295,7 @@
   height: auto;
   border-radius: 10px;
   object-fit: contain;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0;
   border: 1px solid rgba(132, 121, 208, 0.35);
 }
 
@@ -303,6 +335,29 @@
   background: var(--color-bg-tint);
   box-shadow: var(--shadow-card);
   color: var(--text-dark);
+  height: 100%;
+  align-content: start;
+}
+
+.contact-column {
+  display: grid;
+  gap: 1rem;
+}
+
+.contact-email-card {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tint);
+  box-shadow: var(--shadow-card);
+  color: var(--text-dark);
+}
+
+.contact-email-card h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-dark);
 }
 
 .contact-form input {
@@ -331,6 +386,19 @@
 .contact-form label,
 .contact-form p {
   color: rgba(15, 24, 53, 0.85);
+}
+
+.contact-helper {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.button-email {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.35;
 }
 
 .contact-form input:focus-visible,
@@ -374,8 +442,24 @@
     width: 120px;
   }
 
+  .button-email {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
   .tech-flow-diagram {
     grid-template-columns: 1fr;
+  }
+
+  .team-grid .card {
+    grid-template-columns: 1fr;
+    row-gap: 0.8rem;
+  }
+
+  .team-growth-callout {
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
   .tech-node-wrap {

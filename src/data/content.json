@@ -4,19 +4,19 @@
   },
   "hero": {
     "title": "Energy beyond Earth",
-    "subtitle": "Precision power delivery for the space industrial revolution."
+    "subtitle": "The power infrastructure for the space industrial\u00A0revolution"
   },
   "vision": {
     "title": "Power abundance, not power budgets",
-    "body": "NEOWATT designs beamed-power infrastructure for persistent orbital, cislunar, and lunar operations. Instead of sizing missions around worst-case energy scarcity, operators can plan for sustained power availability, higher duty cycles, and faster scale-up of critical services."
+    "body": "Computing, manufacturing, and mining, are moving to space.\n\nThis is the space industrial revolution.\n\nThis requires a space power grid to delivery power wherever it is needed, on demand, day or night."
   },
   "problem": {
     "title": "Space has a power problem",
-    "body": "Most missions still depend on isolated generation and storage at each asset. That drives up subsystem mass and integration complexity, limits payload, and creates downtime when demand peaks or sunlight drops. Space operations need power delivered across networks, not trapped in local budgets."
+    "body": "Today\u2019s satellites are like factories generating their power locally with water wheels or steam engines in the industrial revolution.\n\nThe power grid decoupled power generation from consumption, enabling power on-demand and modern industry."
   },
   "technology": {
     "title": "Technology",
-    "body": "",
+    "body": "Power beaming will be the power grid infrastructure for the space industrial revolution\n\nIt unlocks a new market in which satellite power can be purchased, traded, and shared.\n\nSurplus power can be sold.\nAdditional power can be purchased.\n\nPower can be delivered to eclipsed regions, including the two-week lunar night.",
     "flow": [
       {
         "id": "generation",
@@ -54,7 +54,7 @@
   },
   "capabilities": {
     "title": "Capabilities unlocked",
-    "body": "Explore what power beaming enables and which customer segments benefit most."
+    "body": "Explore what power beaming enables for each customer."
   },
   "roadmap": {
     "title": "Roadmap",

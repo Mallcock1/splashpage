@@ -9,17 +9,21 @@
       "Space weather risk and environment modelling.",
       "Space systems engineering and critical infrastructure."
     ],
-    "photoPath": "/assets/images/team/matthew-allcock.jpg",
+    "photoPath": "./assets/images/team/matthew-allcock.jpg",
     "links": [
       {
         "label": "Email",
-        "url": "mailto:contact@neowatt.co.uk"
+        "url": "mailto:matthew.allcock@neowatt.co.uk"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/matthew-allcock/"
       }
     ]
   },
   {
     "id": "cofounder-stealth",
-    "name": "Co-founder (Stealth)",
+    "name": "Stealth",
     "role": "Co-founder",
     "highlights": [
       "RF engineering.",
@@ -27,7 +31,7 @@
       "Satcom product engineering.",
       "Scaling innovative space technology."
     ],
-    "photoPath": "/assets/images/team/cofounder-placeholder.svg",
+    "photoPath": "./assets/images/team/cofounder.png",
     "links": []
   }
 ]

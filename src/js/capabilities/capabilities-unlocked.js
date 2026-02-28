@@ -20,7 +20,6 @@ function renderCapabilityCard(item) {
     <article class="capability-card" data-capability-id="${item.id}">
       <h4>${item.title}</h4>
       <p>${item.description}</p>
-      <p class="capability-impact">${item.impact}</p>
       <div class="capability-badges">${segmentBadges}</div>
     </article>
   `;

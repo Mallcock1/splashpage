@@ -9,7 +9,7 @@
   },
   {
     "id": "defence-security",
-    "label": "Defence & security"
+    "label": "Defence"
   },
   {
     "id": "lunar-infra",
@@ -18,5 +18,13 @@
   {
     "id": "in-space-manufacturing",
     "label": "In-space industry"
+  },
+  {
+    "id": "drone-operators",
+    "label": "Drone operators"
+  },
+  {
+    "id": "haps-operators",
+    "label": "HAPS operators"
   }
 ]

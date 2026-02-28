@@ -2,25 +2,19 @@
   {
     "id": "uksa",
     "name": "UK Space Agency",
-    "logoPath": "/assets/images/supporters/UKSA-logo-light.png",
+    "logoPath": "./assets/images/supporters/UKSA-logo-light.png",
     "url": "https://www.gov.uk/government/organisations/uk-space-agency"
   },
   {
     "id": "uksa-accelerator",
     "name": "UK Space Accelerator",
-    "logoPath": "/assets/images/supporters/UKSA-accelerator-logo.avif",
+    "logoPath": "./assets/images/supporters/UKSA-accelerator-logo.avif",
     "url": "https://www.ukspaceaccelerator.co.uk/"
   },
   {
     "id": "espark",
     "name": "e-spark",
-    "logoPath": "/assets/images/supporters/e-spark-logo.png",
-    "url": "https://www.e-spark.co.uk/"
-  },
-  {
-    "id": "exotopic",
-    "name": "Exotopic",
-    "logoPath": "/assets/images/supporters/Exotopic-logo.png",
-    "url": "https://www.exotopic.com/"
+    "logoPath": "./assets/images/supporters/e-spark-logo.png",
+    "url": "https://www.entrepreneurial-spark.com/"
   }
 ]
