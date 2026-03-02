@@ -16,11 +16,22 @@ function renderCapabilityCard(item) {
     .map((segment) => `<span class="capability-badge">${segment.label}</span>`)
     .join("");
 
+  const descriptionId = `capability-body-${item.id}`;
+
   return `
     <article class="capability-card" data-capability-id="${item.id}">
-      <h4>${item.title}</h4>
-      <p>${item.description}</p>
+      <h4>
+        <button
+          type="button"
+          class="capability-toggle"
+          aria-expanded="false"
+          aria-controls="${descriptionId}"
+        >
+          ${item.title}
+        </button>
+      </h4>
       <div class="capability-badges">${segmentBadges}</div>
+      <p id="${descriptionId}" class="capability-description" hidden>${item.description}</p>
     </article>
   `;
 }
@@ -43,6 +54,20 @@ export function initCapabilitiesUnlocked() {
         : capabilities.filter((item) => item.segments.includes(activeSegment));
 
     gridEl.innerHTML = visible.map((item) => renderCapabilityCard(item)).join("");
+
+    gridEl.querySelectorAll(".capability-toggle").forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const controlsId = toggle.getAttribute("aria-controls");
+        const body = controlsId ? document.getElementById(controlsId) : null;
+        if (!body) {
+          return;
+        }
+
+        const currentlyExpanded = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", currentlyExpanded ? "false" : "true");
+        body.hidden = currentlyExpanded;
+      });
+    });
 
     filtersEl.querySelectorAll("[data-segment]").forEach((button) => {
       button.addEventListener("click", () => {

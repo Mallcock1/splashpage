@@ -80,6 +80,7 @@
 
   .vision-heading-wrap {
     text-align: left;
+    order: -1;
   }
 
   .section-lined::before {

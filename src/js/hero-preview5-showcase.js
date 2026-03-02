@@ -1,6 +1,9 @@
 const HOLD_MS = 8000;
 const TRANSITION_MS = 1200;
 const MAX_DPR = 2;
+const SWIPE_THRESHOLD_PX = 36;
+const SWIPE_COMMIT_PROGRESS = 0.22;
+const SWIPE_SETTLE_MS = 260;
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -692,6 +695,17 @@ export function initHeroPreview5Showcase(containerEl, { reducedMotion = false } 
   let scenePhaseMs = 0;
   const segmentMs = HOLD_MS + TRANSITION_MS;
   const dotButtons = Array.from(controls.querySelectorAll(".hero-visual-dot"));
+  let swipeActive = false;
+  let swipeLocked = false;
+  let swipeStartX = 0;
+  let swipeStartY = 0;
+  let swipeDeltaX = 0;
+  let swipeDirection = 0;
+  let swipeSettle = null;
+
+  function getSceneIndexByOffset(offset) {
+    return (sceneIndex + offset + SCENES.length) % SCENES.length;
+  }
 
   function updateControls() {
     dotButtons.forEach((button, idx) => {
@@ -704,7 +718,60 @@ export function initHeroPreview5Showcase(containerEl, { reducedMotion = false } 
   function setScene(index) {
     sceneIndex = (index + SCENES.length) % SCENES.length;
     scenePhaseMs = 0;
+    swipeDeltaX = 0;
+    swipeDirection = 0;
+    swipeSettle = null;
     updateControls();
+  }
+
+  function getSwipeProgress() {
+    return clamp(Math.abs(swipeDeltaX) / Math.max(1, width), 0, 1);
+  }
+
+  function beginSwipeSettle(now, commit) {
+    if (!swipeDirection) {
+      swipeSettle = null;
+      swipeDeltaX = 0;
+      return;
+    }
+    swipeSettle = {
+      startMs: now,
+      from: getSwipeProgress(),
+      to: commit ? 1 : 0,
+      direction: swipeDirection,
+      commit,
+      targetIndex: getSceneIndexByOffset(swipeDirection)
+    };
+    swipeDeltaX = 0;
+    swipeDirection = 0;
+  }
+
+  function renderSwipeTransition(ctx, now, direction, progress) {
+    const current = SCENES[sceneIndex];
+    const adjacent = SCENES[getSceneIndexByOffset(direction)];
+    const timeSec = now * 0.001;
+
+    const travel = width * 0.62;
+    const currentShiftX = -direction * progress * travel;
+    const incomingShiftX = direction * (1 - progress) * travel;
+
+    drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, current.theme);
+    if (progress > 0.001) {
+      ctx.save();
+      ctx.globalAlpha = 0.08 + progress * 0.92;
+      drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, adjacent.theme);
+      ctx.restore();
+    }
+
+    drawSceneLayer(ctx, current.draw, width, height, timeSec, reducedMotion, {
+      alpha: 1 - progress * 0.18,
+      shiftX: currentShiftX
+    });
+
+    drawSceneLayer(ctx, adjacent.draw, width, height, timeSec, reducedMotion, {
+      alpha: 0.08 + progress * 0.92,
+      shiftX: incomingShiftX
+    });
   }
 
   controls.addEventListener("click", (event) => {
@@ -721,6 +788,74 @@ export function initHeroPreview5Showcase(containerEl, { reducedMotion = false } 
     }
   });
   updateControls();
+
+  const onTouchStart = (event) => {
+    if (event.touches.length !== 1) {
+      swipeActive = false;
+      return;
+    }
+    const touch = event.touches[0];
+    swipeStartX = touch.clientX;
+    swipeStartY = touch.clientY;
+    swipeDeltaX = 0;
+    swipeDirection = 0;
+    swipeActive = true;
+    swipeLocked = false;
+    swipeSettle = null;
+  };
+
+  const onTouchMove = (event) => {
+    if (!swipeActive || event.touches.length !== 1) {
+      return;
+    }
+    const touch = event.touches[0];
+    const dx = touch.clientX - swipeStartX;
+    const dy = touch.clientY - swipeStartY;
+
+    if (!swipeLocked) {
+      if (Math.abs(dx) < 8) {
+        return;
+      }
+      if (Math.abs(dx) > Math.abs(dy) * 1.1) {
+        swipeLocked = true;
+      } else {
+        swipeActive = false;
+        return;
+      }
+    }
+
+    event.preventDefault();
+    swipeDeltaX = clamp(dx, -width, width);
+    swipeDirection = swipeDeltaX < 0 ? 1 : -1;
+  };
+
+  const onTouchEnd = (event) => {
+    if (!swipeActive || event.changedTouches.length < 1) {
+      swipeActive = false;
+      return;
+    }
+    swipeActive = false;
+    if (!swipeLocked || !swipeDirection) {
+      swipeDeltaX = 0;
+      swipeDirection = 0;
+      return;
+    }
+
+    const progress = getSwipeProgress();
+    const commit = Math.abs(swipeDeltaX) >= SWIPE_THRESHOLD_PX && progress >= SWIPE_COMMIT_PROGRESS;
+    beginSwipeSettle(performance.now(), commit);
+  };
+
+  const onTouchCancel = () => {
+    swipeActive = false;
+    swipeDeltaX = 0;
+    swipeDirection = 0;
+  };
+
+  containerEl.addEventListener("touchstart", onTouchStart, { passive: true });
+  containerEl.addEventListener("touchmove", onTouchMove, { passive: false });
+  containerEl.addEventListener("touchend", onTouchEnd, { passive: true });
+  containerEl.addEventListener("touchcancel", onTouchCancel, { passive: true });
 
   function resize(force = false) {
     const nextWidth = Math.max(1, Math.round(containerEl.clientWidth || 0));
@@ -770,14 +905,41 @@ export function initHeroPreview5Showcase(containerEl, { reducedMotion = false } 
     }
     const dt = Math.min(80, Math.max(0, now - lastNow));
     lastNow = now;
-    scenePhaseMs += dt;
-    if (scenePhaseMs >= segmentMs) {
-      scenePhaseMs -= segmentMs;
-      sceneIndex = (sceneIndex + 1) % SCENES.length;
-      updateControls();
+    const isInteractiveSwipe = swipeActive && swipeLocked && swipeDirection !== 0;
+    if (!isInteractiveSwipe && !swipeSettle) {
+      scenePhaseMs += dt;
+      if (scenePhaseMs >= segmentMs) {
+        scenePhaseMs -= segmentMs;
+        sceneIndex = (sceneIndex + 1) % SCENES.length;
+        updateControls();
+      }
     }
 
     resize();
+
+    if (isInteractiveSwipe) {
+      renderSwipeTransition(ctx, now, swipeDirection, getSwipeProgress());
+      rafId = window.requestAnimationFrame(loop);
+      return;
+    }
+
+    if (swipeSettle) {
+      const elapsed = now - swipeSettle.startMs;
+      const t = clamp(elapsed / SWIPE_SETTLE_MS, 0, 1);
+      const p = lerp(swipeSettle.from, swipeSettle.to, smoothStep(t));
+      renderSwipeTransition(ctx, now, swipeSettle.direction, p);
+      if (t >= 1) {
+        if (swipeSettle.commit) {
+          sceneIndex = swipeSettle.targetIndex;
+          scenePhaseMs = 0;
+          updateControls();
+        }
+        swipeSettle = null;
+      }
+      rafId = window.requestAnimationFrame(loop);
+      return;
+    }
+
     const currentScene = SCENES[sceneIndex];
     const nextScene = SCENES[(sceneIndex + 1) % SCENES.length];
     const timeSec = now * 0.001;
@@ -823,6 +985,10 @@ export function initHeroPreview5Showcase(containerEl, { reducedMotion = false } 
       if (resizeObserver) {
         resizeObserver.disconnect();
       }
+      containerEl.removeEventListener("touchstart", onTouchStart);
+      containerEl.removeEventListener("touchmove", onTouchMove);
+      containerEl.removeEventListener("touchend", onTouchEnd);
+      containerEl.removeEventListener("touchcancel", onTouchCancel);
       containerEl.replaceChildren();
     }
   };

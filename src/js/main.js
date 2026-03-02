@@ -6,7 +6,6 @@ import supporters from "../data/supporters.json";
 import team from "../data/team.json";
 
 import { bindEmailCaptureForm } from "./form-email-capture";
-import { bindMissionContactForm } from "./form-mission-contact";
 import { initCapabilitiesUnlocked } from "./capabilities/capabilities-unlocked";
 import { initStickyNav } from "./nav-sticky";
 import { initScrollReveal } from "./scroll-reveal";
@@ -21,9 +20,6 @@ import { initHeroScene } from "./three/hero-scene";
 import { detectRenderTier } from "./three/loaders";
 
 const NEWSLETTER_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwp6yVhEvSS5paW-viO8SgCOGNKb2QHhi27FByRXu7LCUHovFD1-ND59oTq7-cRG76EbA/exec";
-
-const MISSION_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbwp6yVhEvSS5paW-viO8SgCOGNKb2QHhi27FByRXu7LCUHovFD1-ND59oTq7-cRG76EbA/exec";
 
 const HERO_PREVIEW_VARIANT = import.meta.env.VITE_PREVIEW_VARIANT || "preview-1";
@@ -152,12 +148,22 @@ function renderTeam() {
     return;
   }
 
+  const normalizeHighlight = (item) => {
+    if (typeof item !== "string") {
+      return item;
+    }
+    if (/^RF engineering\.?$/i.test(item.trim())) {
+      return "PhD in RF engineering.";
+    }
+    return item;
+  };
+
   team.forEach((person) => {
     const links = person.links
       .map((link) => `<a class="text-link" href="${link.url}">${link.label}</a>`)
       .join("");
     const highlights = (person.highlights || [])
-      .map((item) => `<li>${item}</li>`)
+      .map((item) => `<li>${normalizeHighlight(item)}</li>`)
       .join("");
 
     const card = document.createElement("article");
@@ -334,6 +340,72 @@ function bindHeroLearnMore() {
   });
 }
 
+function initMobileNav() {
+  const header = document.getElementById("site-header");
+  const toggle = header?.querySelector(".nav-toggle");
+  const menu = header?.querySelector("#site-nav-menu");
+  if (!header || !(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) {
+    return;
+  }
+
+  const mobileQuery = window.matchMedia("(max-width: 1050px)");
+
+  const setOpen = (open) => {
+    const isOpen = Boolean(open) && mobileQuery.matches;
+    header.classList.toggle("is-menu-open", isOpen);
+    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    menu.setAttribute("aria-hidden", isOpen ? "false" : "true");
+  };
+
+  const closeMenu = () => {
+    setOpen(false);
+  };
+
+  const syncLayout = () => {
+    if (mobileQuery.matches) {
+      const isOpen = header.classList.contains("is-menu-open");
+      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      menu.setAttribute("aria-hidden", isOpen ? "false" : "true");
+      return;
+    }
+    header.classList.remove("is-menu-open");
+    toggle.setAttribute("aria-expanded", "false");
+    menu.removeAttribute("aria-hidden");
+  };
+
+  toggle.addEventListener("click", () => {
+    setOpen(!header.classList.contains("is-menu-open"));
+  });
+
+  menu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      closeMenu();
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!mobileQuery.matches || !header.classList.contains("is-menu-open")) {
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof Node)) {
+      return;
+    }
+    if (!header.contains(target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
+
+  window.addEventListener("resize", syncLayout, { passive: true });
+  syncLayout();
+}
+
 function initHeroIntroEntrance() {
   if (
     HERO_PREVIEW_VARIANT === "preview-0" ||
@@ -404,6 +476,7 @@ function initApp() {
   }
 
   initStickyNav({ heroSelector: "#hero", navSelector: "#site-header" });
+  initMobileNav();
   initSectionObserver([
     "#problem",
     "#vision",
@@ -423,9 +496,6 @@ function initApp() {
 
   const newsletterForm = document.getElementById("signup-form");
   bindEmailCaptureForm(newsletterForm, NEWSLETTER_SCRIPT_URL);
-
-  const missionForm = document.getElementById("powerup-form");
-  bindMissionContactForm(missionForm, MISSION_SCRIPT_URL);
 }
 
 initApp();

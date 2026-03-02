@@ -546,15 +546,21 @@ section p {
     padding-bottom: 3rem;
   }
 
+  .hero .hero-content {
+    width: min(var(--container-width), calc(100% - clamp(3.5rem, 9vw, 9rem)));
+    margin-inline: auto;
+  }
+
   .variant-preview-0 #hero .hero-content {
-    width: min(96vw, 720px);
+    width: min(860px, calc(100% - clamp(3.5rem, 9vw, 9rem)));
     padding: 1rem;
   }
 
   :is(.variant-preview-2, .variant-preview-3) #hero .hero-content {
+    width: min(820px, calc(100% - clamp(3.5rem, 9vw, 9rem)));
     margin-top: clamp(5rem, 15vh, 8rem);
     padding: 1rem 0.6rem;
-    margin-inline: 0;
+    margin-inline: auto;
   }
 
   .hero-interaction-hint {
@@ -578,7 +584,7 @@ section p {
   .variant-preview-5 #hero .hero-content {
     grid-template-columns: 1fr;
     gap: 1.1rem;
-    width: min(720px, 100%);
+    width: min(var(--container-width), calc(100% - clamp(3.5rem, 9vw, 9rem)));
     padding-inline: 0;
   }
 
@@ -588,6 +594,7 @@ section p {
   }
 
   .variant-preview-5 #hero .hero-copy-column {
+    grid-row: 1;
     max-width: none;
   }
 
@@ -596,6 +603,7 @@ section p {
   }
 
   .variant-preview-5 .hero-visual-slot {
+    grid-row: 2;
     min-height: 240px;
     margin-top: 0.4rem;
   }
