@@ -51,7 +51,7 @@
   background:
     radial-gradient(circle at 0% 0%, rgba(132, 121, 208, 0.2), transparent 52%),
     rgba(9, 18, 40, 0.78);
-  padding: 1rem;
+  padding: 0.65rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -67,6 +67,7 @@
 
 .capability-card h4 {
   font-size: 1.2rem;
+  margin: 0;
 }
 
 .capability-toggle {

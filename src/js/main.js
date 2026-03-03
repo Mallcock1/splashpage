@@ -104,7 +104,10 @@ function renderRoadmap() {
 
   roadmap.forEach((item) => {
     const timelineLabel = item.quarter ? `${item.quarter} ${item.year}` : String(item.year);
-    const statusMarkup = item.status ? `<p class="status-pill">${item.status}</p>` : "";
+    const statusClass = item.status
+      ? ` status-pill-${item.status.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`
+      : "";
+    const statusMarkup = item.status ? `<p class="status-pill${statusClass}">${item.status}</p>` : "";
     const descriptionMarkup = item.description ? `<p>${item.description}</p>` : "";
 
     const li = document.createElement("li");
@@ -190,7 +193,7 @@ function initHeroVisual() {
 
   if (HERO_PREVIEW_VARIANT === "preview-5") {
     const controller = initHeroPreview5Showcase(heroVisualSlot, {
-      reducedMotion: prefersReducedMotion
+      reducedMotion: false
     });
     if (!controller && fallback) {
       fallback.hidden = false;

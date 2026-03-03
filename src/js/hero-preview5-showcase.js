@@ -416,17 +416,27 @@ function drawSceneLunarRelay(ctx, width, height, timeSec, reducedMotion) {
   ctx.lineWidth = 1.2;
   ctx.stroke();
 
-  ctx.fillStyle = "rgba(143, 158, 196, 0.28)";
-  for (let i = 0; i < 4; i += 1) {
-    const a = 1.35 + i * 0.5;
-    const crater = {
-      x: moon.x + Math.cos(a) * moon.r * (0.22 + i * 0.1),
-      y: moon.y + Math.sin(a) * moon.r * (0.2 + i * 0.08)
-    };
+  const craterDefs = [
+    { dx: -0.32, dy: -0.08, rx: 0.12, ry: 0.072, rot: -0.28, alpha: 0.28 },
+    { dx: -0.09, dy: 0.18, rx: 0.086, ry: 0.05, rot: 0.18, alpha: 0.24 },
+    { dx: 0.24, dy: -0.2, rx: 0.094, ry: 0.056, rot: 0.12, alpha: 0.26 },
+    { dx: 0.3, dy: 0.08, rx: 0.062, ry: 0.038, rot: -0.42, alpha: 0.2 },
+    { dx: -0.24, dy: 0.29, rx: 0.056, ry: 0.034, rot: 0.36, alpha: 0.18 }
+  ];
+  craterDefs.forEach((crater) => {
+    ctx.fillStyle = `rgba(136, 152, 189, ${crater.alpha})`;
     ctx.beginPath();
-    ctx.ellipse(crater.x, crater.y, moon.r * 0.08, moon.r * 0.05, a * 0.2, 0, Math.PI * 2);
+    ctx.ellipse(
+      moon.x + crater.dx * moon.r,
+      moon.y + crater.dy * moon.r,
+      moon.r * crater.rx,
+      moon.r * crater.ry,
+      crater.rot,
+      0,
+      Math.PI * 2
+    );
     ctx.fill();
-  }
+  });
 
   const receiverAngle = -2.42;
   const receiverYOffset = Math.sin(receiverAngle) * moon.r * 0.84;
@@ -491,6 +501,279 @@ function drawSceneLunarRelay(ctx, width, height, timeSec, reducedMotion) {
   ctx.fill();
 }
 
+function drawSceneEclipseTransfer(ctx, width, height, timeSec, reducedMotion) {
+  const sun = {
+    x: width * 0.13,
+    y: height * 0.2,
+    r: Math.min(width, height) * 0.088
+  };
+  const earth = {
+    x: width * 0.56,
+    y: height * 0.56,
+    r: Math.min(width, height) * 0.18
+  };
+
+  const sunToEarth = {
+    x: earth.x - sun.x,
+    y: earth.y - sun.y
+  };
+  const sunToEarthLength = Math.max(1, Math.hypot(sunToEarth.x, sunToEarth.y));
+  const shadowDir = {
+    x: sunToEarth.x / sunToEarthLength,
+    y: sunToEarth.y / sunToEarthLength
+  };
+  const shadowPerp = {
+    x: -shadowDir.y,
+    y: shadowDir.x
+  };
+
+  const sunGlow = ctx.createRadialGradient(sun.x, sun.y, sun.r * 0.2, sun.x, sun.y, sun.r * 2.6);
+  sunGlow.addColorStop(0, "rgba(255, 243, 173, 0.95)");
+  sunGlow.addColorStop(0.45, "rgba(255, 220, 120, 0.45)");
+  sunGlow.addColorStop(1, "rgba(255, 220, 120, 0)");
+  ctx.fillStyle = sunGlow;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.beginPath();
+  ctx.arc(sun.x, sun.y, sun.r, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(255, 234, 132, 0.96)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 246, 194, 0.75)";
+  ctx.lineWidth = 1.3;
+  ctx.stroke();
+
+  const sunEdgeTop = {
+    x: sun.x + shadowPerp.x * sun.r,
+    y: sun.y + shadowPerp.y * sun.r
+  };
+  const sunEdgeBottom = {
+    x: sun.x - shadowPerp.x * sun.r,
+    y: sun.y - shadowPerp.y * sun.r
+  };
+  const earthEdgeTop = {
+    x: earth.x + shadowPerp.x * earth.r,
+    y: earth.y + shadowPerp.y * earth.r
+  };
+  const earthEdgeBottom = {
+    x: earth.x - shadowPerp.x * earth.r,
+    y: earth.y - shadowPerp.y * earth.r
+  };
+
+  const topRay = {
+    x: earthEdgeTop.x - sunEdgeTop.x,
+    y: earthEdgeTop.y - sunEdgeTop.y
+  };
+  const topRayLength = Math.max(1, Math.hypot(topRay.x, topRay.y));
+  const topRayDir = {
+    x: topRay.x / topRayLength,
+    y: topRay.y / topRayLength
+  };
+  const bottomRay = {
+    x: earthEdgeBottom.x - sunEdgeBottom.x,
+    y: earthEdgeBottom.y - sunEdgeBottom.y
+  };
+  const bottomRayLength = Math.max(1, Math.hypot(bottomRay.x, bottomRay.y));
+  const bottomRayDir = {
+    x: bottomRay.x / bottomRayLength,
+    y: bottomRay.y / bottomRayLength
+  };
+
+  const shadowLength = Math.max(width, height) * 0.84;
+  const farTop = {
+    x: earthEdgeTop.x + topRayDir.x * shadowLength,
+    y: earthEdgeTop.y + topRayDir.y * shadowLength
+  };
+  const farBottom = {
+    x: earthEdgeBottom.x + bottomRayDir.x * shadowLength,
+    y: earthEdgeBottom.y + bottomRayDir.y * shadowLength
+  };
+
+  const shadowGradient = ctx.createLinearGradient(earth.x, earth.y, earth.x + shadowDir.x * shadowLength, earth.y + shadowDir.y * shadowLength);
+  shadowGradient.addColorStop(0, "rgba(8, 16, 38, 0.12)");
+  shadowGradient.addColorStop(0.42, "rgba(7, 14, 33, 0.34)");
+  shadowGradient.addColorStop(1, "rgba(6, 12, 30, 0.58)");
+  ctx.fillStyle = shadowGradient;
+  ctx.beginPath();
+  ctx.moveTo(earthEdgeTop.x, earthEdgeTop.y);
+  ctx.lineTo(farTop.x, farTop.y);
+  ctx.lineTo(farBottom.x, farBottom.y);
+  ctx.lineTo(earthEdgeBottom.x, earthEdgeBottom.y);
+  ctx.closePath();
+  ctx.fill();
+
+  drawSoftShadow(ctx, earth.x, earth.y + earth.r * 1.15, earth.r * 1.25, earth.r * 0.32, 0.2);
+
+  const litEdge = {
+    x: earth.x - shadowDir.x * earth.r * 0.95,
+    y: earth.y - shadowDir.y * earth.r * 0.95
+  };
+  const darkEdge = {
+    x: earth.x + shadowDir.x * earth.r * 1.15,
+    y: earth.y + shadowDir.y * earth.r * 1.15
+  };
+
+  const earthGradient = ctx.createLinearGradient(litEdge.x, litEdge.y, darkEdge.x, darkEdge.y);
+  earthGradient.addColorStop(0, "rgba(124, 196, 255, 0.98)");
+  earthGradient.addColorStop(0.53, "rgba(64, 126, 225, 0.96)");
+  earthGradient.addColorStop(1, "rgba(34, 70, 156, 0.96)");
+  ctx.beginPath();
+  ctx.arc(earth.x, earth.y, earth.r, 0, Math.PI * 2);
+  ctx.fillStyle = earthGradient;
+  ctx.fill();
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(earth.x, earth.y, earth.r, 0, Math.PI * 2);
+  ctx.clip();
+  const darkHemisphere = ctx.createLinearGradient(litEdge.x, litEdge.y, darkEdge.x, darkEdge.y);
+  darkHemisphere.addColorStop(0, "rgba(9, 17, 39, 0)");
+  darkHemisphere.addColorStop(1, "rgba(9, 17, 39, 0.58)");
+  ctx.fillStyle = darkHemisphere;
+  ctx.fillRect(earth.x - earth.r * 1.4, earth.y - earth.r * 1.4, earth.r * 2.8, earth.r * 2.8);
+  ctx.restore();
+
+  ctx.strokeStyle = "rgba(198, 227, 255, 0.65)";
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.arc(earth.x, earth.y, earth.r, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(153, 219, 194, 0.5)";
+  ctx.beginPath();
+  ctx.ellipse(earth.x - earth.r * 0.26, earth.y - earth.r * 0.08, earth.r * 0.33, earth.r * 0.16, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(earth.x + earth.r * 0.18, earth.y + earth.r * 0.17, earth.r * 0.24, earth.r * 0.12, 0.45, 0, Math.PI * 2);
+  ctx.fill();
+
+  const orbit = {
+    cx: earth.x,
+    cy: earth.y,
+    rx: earth.r * 1.7,
+    ry: earth.r * 0.84,
+    rot: -0.2
+  };
+
+  ctx.save();
+  ctx.translate(orbit.cx, orbit.cy);
+  ctx.rotate(orbit.rot);
+  ctx.beginPath();
+  ctx.ellipse(0, 0, orbit.rx, orbit.ry, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(181, 205, 255, 0.27)";
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  ctx.restore();
+
+  const satCount = 4;
+  const baseAngle = reducedMotion ? 0.62 : timeSec * 0.28;
+  const satData = [];
+
+  function pointInConvexQuad(point, a, b, c, d) {
+    const verts = [a, b, c, d];
+    let hasPos = false;
+    let hasNeg = false;
+    for (let i = 0; i < verts.length; i += 1) {
+      const p1 = verts[i];
+      const p2 = verts[(i + 1) % verts.length];
+      const cross = (p2.x - p1.x) * (point.y - p1.y) - (p2.y - p1.y) * (point.x - p1.x);
+      if (cross > 0) {
+        hasPos = true;
+      } else if (cross < 0) {
+        hasNeg = true;
+      }
+      if (hasPos && hasNeg) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  for (let i = 0; i < satCount; i += 1) {
+    const phase = baseAngle + (i / satCount) * Math.PI * 2;
+    const position = pointOnRotatedEllipse(orbit.cx, orbit.cy, orbit.rx, orbit.ry, orbit.rot, phase);
+    const rel = {
+      x: position.x - earth.x,
+      y: position.y - earth.y
+    };
+    const proj = rel.x * shadowDir.x + rel.y * shadowDir.y;
+    const inShadowCone =
+      proj > 0 &&
+      pointInConvexQuad(position, earthEdgeTop, farTop, farBottom, earthEdgeBottom);
+
+    satData.push({
+      idx: i,
+      phase,
+      position,
+      proj,
+      inShadow: inShadowCone,
+      sunlit: !inShadowCone
+    });
+  }
+
+  let targetShadow = null;
+  satData.forEach((sat) => {
+    if (!sat.inShadow) {
+      return;
+    }
+    if (!targetShadow || sat.proj > targetShadow.proj) {
+      targetShadow = sat;
+    }
+  });
+
+  let sourceLeft = null;
+  let sourceRight = null;
+  if (targetShadow) {
+    const leftIdx = (targetShadow.idx - 1 + satCount) % satCount;
+    const rightIdx = (targetShadow.idx + 1) % satCount;
+    const leftCandidate = satData[leftIdx];
+    const rightCandidate = satData[rightIdx];
+    sourceLeft = leftCandidate && leftCandidate.sunlit ? leftCandidate : null;
+    sourceRight = rightCandidate && rightCandidate.sunlit ? rightCandidate : null;
+  }
+
+  satData.forEach((sat) => {
+    const isSource =
+      (sourceLeft && sat.idx === sourceLeft.idx) ||
+      (sourceRight && sat.idx === sourceRight.idx);
+    const alpha = sat.inShadow ? 0.58 : isSource ? 1 : 0.9;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    drawSatellite(ctx, sat.position.x, sat.position.y, sat.phase + 0.6, 1.06);
+    ctx.restore();
+    if (sat.inShadow) {
+      ctx.beginPath();
+      ctx.arc(sat.position.x, sat.position.y, 10.5, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(13, 24, 55, 0.32)";
+      ctx.fill();
+    }
+  });
+
+  if (targetShadow) {
+    const beamTargets = [sourceLeft, sourceRight].filter(Boolean);
+    beamTargets.forEach((source, index) => {
+      if (!source.sunlit) {
+        return;
+      }
+      drawBeam(ctx, source.position, targetShadow.position, timeSec + index * 0.12, reducedMotion, {
+        curvature: 0.06,
+        width: 2.5,
+        packetCount: 5,
+        packetSpeed: 0.48,
+        colorStart: "rgba(188, 215, 255, 0.9)",
+        colorEnd: "rgba(204, 174, 255, 0.82)"
+      });
+    });
+
+    if (beamTargets.length) {
+      const receiveGlow = reducedMotion ? 0.32 : 0.3 + (Math.sin(timeSec * 3.1) + 1) * 0.12;
+      ctx.beginPath();
+      ctx.arc(targetShadow.position.x, targetShadow.position.y, 14, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(173, 206, 255, ${receiveGlow})`;
+      ctx.fill();
+    }
+  }
+}
+
 function buildStars(width, height) {
   const count = Math.max(36, Math.floor((width * height) / 24000));
   const random = createSeededRandom((width << 16) ^ height ^ 0x9e3779b9);
@@ -524,18 +807,23 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
     ctx.fillRect(0, 0, width, height);
 
     const cloudOffset = reducedMotion ? 0 : Math.sin(timeSec * 0.14) * width * 0.02;
-    ctx.fillStyle = "rgba(245, 251, 255, 0.74)";
+    ctx.fillStyle = "rgba(245, 251, 255, 0.82)";
     const clouds = [
       { x: width * 0.2 + cloudOffset, y: height * 0.18, w: width * 0.22, h: height * 0.08 },
       { x: width * 0.62 - cloudOffset * 0.8, y: height * 0.24, w: width * 0.18, h: height * 0.07 },
       { x: width * 0.46 + cloudOffset * 0.6, y: height * 0.12, w: width * 0.16, h: height * 0.06 }
     ];
     clouds.forEach((cloud) => {
-      ctx.beginPath();
-      ctx.ellipse(cloud.x, cloud.y, cloud.w * 0.34, cloud.h * 0.5, 0, 0, Math.PI * 2);
-      ctx.ellipse(cloud.x - cloud.w * 0.2, cloud.y + cloud.h * 0.06, cloud.w * 0.24, cloud.h * 0.44, 0, 0, Math.PI * 2);
-      ctx.ellipse(cloud.x + cloud.w * 0.2, cloud.y + cloud.h * 0.04, cloud.w * 0.27, cloud.h * 0.42, 0, 0, Math.PI * 2);
-      ctx.fill();
+      const puffs = [
+        { x: cloud.x, y: cloud.y, rx: cloud.w * 0.34, ry: cloud.h * 0.5 },
+        { x: cloud.x - cloud.w * 0.2, y: cloud.y + cloud.h * 0.06, rx: cloud.w * 0.24, ry: cloud.h * 0.44 },
+        { x: cloud.x + cloud.w * 0.2, y: cloud.y + cloud.h * 0.04, rx: cloud.w * 0.27, ry: cloud.h * 0.42 }
+      ];
+      puffs.forEach((puff) => {
+        ctx.beginPath();
+        ctx.ellipse(puff.x, puff.y, puff.rx, puff.ry, 0, 0, Math.PI * 2);
+        ctx.fill();
+      });
     });
 
     const horizon = ctx.createLinearGradient(0, height * 0.6, 0, height);
@@ -586,6 +874,7 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
 const SCENES = [
   { draw: drawSceneOrbitalTrading, theme: "space" },
   { draw: drawSceneLunarRelay, theme: "space" },
+  { draw: drawSceneEclipseTransfer, theme: "space" },
   { draw: drawSceneGroundToDrone, theme: "day" }
 ];
 

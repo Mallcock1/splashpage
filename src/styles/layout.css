@@ -52,7 +52,10 @@
 }
 
 .section-grid-contact {
-  align-items: stretch;
+  grid-template-columns: minmax(320px, 760px);
+  justify-content: center;
+  align-items: start;
+  row-gap: 1rem;
 }
 
 .vision-heading-wrap {

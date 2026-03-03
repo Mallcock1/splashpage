@@ -1,14 +1,8 @@
 [
   {
-    "id": "uksa",
-    "name": "UK Space Agency",
-    "logoPath": "./assets/images/supporters/UKSA-logo-light.png",
-    "url": "https://www.gov.uk/government/organisations/uk-space-agency"
-  },
-  {
     "id": "uksa-accelerator",
     "name": "UK Space Accelerator",
-    "logoPath": "./assets/images/supporters/UKSA-accelerator-logo.avif",
+    "logoPath": "./assets/images/supporters/UKSA_BLACK.png",
     "url": "https://www.ukspaceaccelerator.co.uk/"
   },
   {
