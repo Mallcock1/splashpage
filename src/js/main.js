@@ -10,19 +10,13 @@ import { initCapabilitiesUnlocked } from "./capabilities/capabilities-unlocked";
 import { initStickyNav } from "./nav-sticky";
 import { initScrollReveal } from "./scroll-reveal";
 import { initSectionObserver } from "./scroll-progress";
-import { initHeroPreview2Playground } from "./hero-preview2-playground";
 import { initHeroPreview5Showcase } from "./hero-preview5-showcase";
-import { initHeroPreview0Network } from "./hero-preview0-network";
-import { initHeroPreview14Fallback } from "./hero-preview14-fallback";
 import { initTechnologyImageCompare } from "./technology-image-compare";
-import { createHeroScrollSync } from "./three/hero-scroll-sync";
-import { initHeroScene } from "./three/hero-scene";
-import { detectRenderTier } from "./three/loaders";
 
 const NEWSLETTER_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbwp6yVhEvSS5paW-viO8SgCOGNKb2QHhi27FByRXu7LCUHovFD1-ND59oTq7-cRG76EbA/exec";
 
-const HERO_PREVIEW_VARIANT = import.meta.env.VITE_PREVIEW_VARIANT || "preview-1";
+const HERO_PREVIEW_VARIANT = "preview-5";
 
 function getByPath(source, path) {
   return path.split(".").reduce((value, key) => value?.[key], source);
@@ -185,105 +179,14 @@ function renderTeam() {
 }
 
 function initHeroVisual() {
-  const canvas = document.getElementById("hero-canvas");
   const heroVisualSlot = document.getElementById("hero-visual-slot");
   const fallback = document.getElementById("hero-fallback");
-  const heroSceneWrap = document.querySelector("#hero .hero-scene-wrap");
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (HERO_PREVIEW_VARIANT === "preview-5") {
-    const controller = initHeroPreview5Showcase(heroVisualSlot, {
-      reducedMotion: false
-    });
-    if (!controller && fallback) {
-      fallback.hidden = false;
-    }
-    return;
+  const controller = initHeroPreview5Showcase(heroVisualSlot, {
+    reducedMotion: false
+  });
+  if (!controller && fallback) {
+    fallback.hidden = false;
   }
-
-  if (!canvas) {
-    if (fallback) {
-      fallback.hidden = false;
-    }
-    return;
-  }
-
-  if (HERO_PREVIEW_VARIANT === "preview-0") {
-    const controller = initHeroPreview0Network(canvas, {
-      reducedMotion: prefersReducedMotion
-    });
-    if (!controller && fallback) {
-      fallback.hidden = false;
-    }
-    return;
-  }
-
-  if (HERO_PREVIEW_VARIANT === "preview-2" || HERO_PREVIEW_VARIANT === "preview-3") {
-    let onFirstInteraction = null;
-
-    if (HERO_PREVIEW_VARIANT === "preview-3" && heroSceneWrap) {
-      let hint = heroSceneWrap.querySelector(".charge-hint");
-      if (!hint) {
-        hint = document.createElement("div");
-        hint.className = "charge-hint";
-        hint.textContent = "Click to charge";
-        hint.style.padding = "0.38rem 0.62rem";
-        hint.style.fontSize = "0.74rem";
-        hint.style.fontWeight = "500";
-        hint.style.background = "rgba(11, 25, 57, 0.5)";
-        hint.style.color = "rgba(235, 243, 255, 0.72)";
-        hint.style.borderColor = "rgba(206, 226, 255, 0.42)";
-        heroSceneWrap.append(hint);
-      }
-      onFirstInteraction = () => {
-        hint.classList.add("is-hidden");
-      };
-    }
-
-    const controller = initHeroPreview2Playground(canvas, {
-      reducedMotion: prefersReducedMotion,
-      enableModeSwitch: HERO_PREVIEW_VARIANT === "preview-3",
-      onFirstInteraction
-    });
-    if (!controller && fallback) {
-      fallback.hidden = false;
-    }
-    return;
-  }
-
-  let controller = null;
-  try {
-    controller = initHeroScene(canvas, {
-      tier: detectRenderTier(),
-      reducedMotion: prefersReducedMotion,
-      variant: HERO_PREVIEW_VARIANT
-    });
-  } catch {
-    controller = null;
-  }
-
-  if (!controller) {
-    if (HERO_PREVIEW_VARIANT === "preview-1" || HERO_PREVIEW_VARIANT === "preview-4") {
-      document.body.setAttribute("data-hero-fallback", HERO_PREVIEW_VARIANT);
-      const variantFallback = initHeroPreview14Fallback(canvas, {
-        variant: HERO_PREVIEW_VARIANT,
-        reducedMotion: prefersReducedMotion
-      });
-      if (!variantFallback && fallback) {
-        fallback.hidden = false;
-      }
-      return;
-    }
-
-    if (fallback) {
-      fallback.hidden = false;
-    }
-    return;
-  }
-
-  document.body.removeAttribute("data-hero-fallback");
-
-  createHeroScrollSync("#hero", controller);
 }
 
 function initHeroCopyMotion() {
@@ -410,12 +313,7 @@ function initMobileNav() {
 }
 
 function initHeroIntroEntrance() {
-  if (
-    HERO_PREVIEW_VARIANT === "preview-0" ||
-    HERO_PREVIEW_VARIANT === "preview-5" ||
-    HERO_PREVIEW_VARIANT === "preview-1" ||
-    HERO_PREVIEW_VARIANT === "preview-2"
-  ) {
+  if (HERO_PREVIEW_VARIANT === "preview-5") {
     return;
   }
 
