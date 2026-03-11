@@ -787,10 +787,14 @@ function buildStars(width, height) {
 }
 
 function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme = "space") {
-  const radius = Math.min(width, height) * 0.08;
-  roundedRectPath(ctx, 0, 0, width, height, radius);
-  ctx.save();
-  ctx.clip();
+  const flatCornersForExport =
+    typeof window !== "undefined" && window.__NEOWATT_EXPORT_FLAT_CORNERS === true;
+  if (!flatCornersForExport) {
+    const radius = Math.min(width, height) * 0.08;
+    roundedRectPath(ctx, 0, 0, width, height, radius);
+    ctx.save();
+    ctx.clip();
+  }
 
   if (theme === "day") {
     const sky = ctx.createLinearGradient(0, 0, 0, height);
@@ -868,7 +872,9 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
     ctx.fillRect(0, height * 0.52, width, height * 0.48);
   }
 
-  ctx.restore();
+  if (!flatCornersForExport) {
+    ctx.restore();
+  }
 }
 
 const SCENES = [
