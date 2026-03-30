@@ -5,6 +5,10 @@ const SWIPE_THRESHOLD_PX = 36;
 const SWIPE_COMMIT_PROGRESS = 0.22;
 const SWIPE_SETTLE_MS = 260;
 
+function isPrintExport() {
+  return typeof window !== "undefined" && window.__NEOWATT_PRINT_EXPORT === true;
+}
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
@@ -70,6 +74,7 @@ function drawSoftShadow(ctx, x, y, radiusX, radiusY, alpha) {
 }
 
 function drawBeam(ctx, start, end, timeSec, reducedMotion, options = {}) {
+  const printMode = isPrintExport();
   const {
     curvature = 0.14,
     width = 3.2,
@@ -99,18 +104,20 @@ function drawBeam(ctx, start, end, timeSec, reducedMotion, options = {}) {
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
 
-  ctx.beginPath();
-  ctx.moveTo(start.x, start.y);
-  ctx.quadraticCurveTo(control.x, control.y, end.x, end.y);
-  ctx.strokeStyle = "rgba(141, 184, 247, 0.24)";
-  ctx.lineWidth = width + 2.6;
-  ctx.stroke();
+  if (!printMode) {
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.quadraticCurveTo(control.x, control.y, end.x, end.y);
+    ctx.strokeStyle = "rgba(141, 184, 247, 0.24)";
+    ctx.lineWidth = width + 2.6;
+    ctx.stroke();
+  }
 
   ctx.beginPath();
   ctx.moveTo(start.x, start.y);
   ctx.quadraticCurveTo(control.x, control.y, end.x, end.y);
   ctx.strokeStyle = gradient;
-  ctx.lineWidth = width;
+  ctx.lineWidth = printMode ? width + 0.6 : width;
   ctx.stroke();
 
   const packets = reducedMotion ? 0 : packetCount;
@@ -119,7 +126,7 @@ function drawBeam(ctx, start, end, timeSec, reducedMotion, options = {}) {
     const point = quadraticPoint(start, control, end, phase);
     const pulse = 1 + Math.sin((timeSec * 4 + i) % (Math.PI * 2)) * 0.18;
     ctx.beginPath();
-    ctx.arc(point.x, point.y, 2.4 * pulse, 0, Math.PI * 2);
+    ctx.arc(point.x, point.y, (printMode ? 1.7 : 2.4) * pulse, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(224, 236, 255, 0.95)";
     ctx.fill();
   }
@@ -128,24 +135,25 @@ function drawBeam(ctx, start, end, timeSec, reducedMotion, options = {}) {
 }
 
 function drawSatellite(ctx, x, y, angle, scale = 1) {
+  const printMode = isPrintExport();
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(angle);
   ctx.scale(scale, scale);
 
-  ctx.fillStyle = "rgba(104, 148, 235, 0.72)";
+  ctx.fillStyle = printMode ? "rgba(98, 142, 230, 0.94)" : "rgba(104, 148, 235, 0.72)";
   roundedRectPath(ctx, -14, -3.8, 9.5, 7.6, 2.5);
   ctx.fill();
   roundedRectPath(ctx, 4.5, -3.8, 9.5, 7.6, 2.5);
   ctx.fill();
 
   const bodyGradient = ctx.createLinearGradient(-4.5, -5.2, 4.5, 6.2);
-  bodyGradient.addColorStop(0, "rgba(233, 241, 255, 0.97)");
-  bodyGradient.addColorStop(1, "rgba(167, 194, 239, 0.94)");
+  bodyGradient.addColorStop(0, printMode ? "rgba(239, 245, 255, 1)" : "rgba(233, 241, 255, 0.97)");
+  bodyGradient.addColorStop(1, printMode ? "rgba(166, 193, 239, 1)" : "rgba(167, 194, 239, 0.94)");
   roundedRectPath(ctx, -5.2, -5, 10.4, 10, 3.5);
   ctx.fillStyle = bodyGradient;
   ctx.fill();
-  ctx.strokeStyle = "rgba(206, 225, 255, 0.74)";
+  ctx.strokeStyle = printMode ? "rgba(206, 225, 255, 0.95)" : "rgba(206, 225, 255, 0.74)";
   ctx.lineWidth = 1;
   ctx.stroke();
 
@@ -787,6 +795,7 @@ function buildStars(width, height) {
 }
 
 function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme = "space") {
+  const printMode = isPrintExport();
   const flatCornersForExport =
     typeof window !== "undefined" && window.__NEOWATT_EXPORT_FLAT_CORNERS === true;
   if (!flatCornersForExport) {
@@ -798,20 +807,22 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
 
   if (theme === "day") {
     const sky = ctx.createLinearGradient(0, 0, 0, height);
-    sky.addColorStop(0, "rgba(152, 210, 255, 1)");
-    sky.addColorStop(0.56, "rgba(185, 228, 255, 1)");
-    sky.addColorStop(1, "rgba(186, 233, 196, 0.86)");
+    sky.addColorStop(0, printMode ? "rgba(146, 206, 255, 1)" : "rgba(152, 210, 255, 1)");
+    sky.addColorStop(0.56, printMode ? "rgba(179, 224, 255, 1)" : "rgba(185, 228, 255, 1)");
+    sky.addColorStop(1, printMode ? "rgba(178, 228, 190, 1)" : "rgba(186, 233, 196, 0.86)");
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, width, height);
 
-    const sun = ctx.createRadialGradient(width * 0.86, height * 0.18, 0, width * 0.86, height * 0.18, width * 0.23);
-    sun.addColorStop(0, "rgba(255, 248, 204, 0.92)");
-    sun.addColorStop(1, "rgba(255, 248, 204, 0)");
-    ctx.fillStyle = sun;
-    ctx.fillRect(0, 0, width, height);
+    if (!printMode) {
+      const sun = ctx.createRadialGradient(width * 0.86, height * 0.18, 0, width * 0.86, height * 0.18, width * 0.23);
+      sun.addColorStop(0, "rgba(255, 248, 204, 0.92)");
+      sun.addColorStop(1, "rgba(255, 248, 204, 0)");
+      ctx.fillStyle = sun;
+      ctx.fillRect(0, 0, width, height);
+    }
 
     const cloudOffset = reducedMotion ? 0 : Math.sin(timeSec * 0.14) * width * 0.02;
-    ctx.fillStyle = "rgba(245, 251, 255, 0.82)";
+    ctx.fillStyle = printMode ? "rgba(245, 251, 255, 0.94)" : "rgba(245, 251, 255, 0.82)";
     const clouds = [
       { x: width * 0.2 + cloudOffset, y: height * 0.18, w: width * 0.22, h: height * 0.08 },
       { x: width * 0.62 - cloudOffset * 0.8, y: height * 0.24, w: width * 0.18, h: height * 0.07 },
@@ -830,34 +841,38 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
       });
     });
 
-    const horizon = ctx.createLinearGradient(0, height * 0.6, 0, height);
-    horizon.addColorStop(0, "rgba(143, 198, 134, 0)");
-    horizon.addColorStop(1, "rgba(127, 185, 109, 0.42)");
-    ctx.fillStyle = horizon;
-    ctx.fillRect(0, height * 0.6, width, height * 0.4);
+    if (!printMode) {
+      const horizon = ctx.createLinearGradient(0, height * 0.6, 0, height);
+      horizon.addColorStop(0, "rgba(143, 198, 134, 0)");
+      horizon.addColorStop(1, "rgba(127, 185, 109, 0.42)");
+      ctx.fillStyle = horizon;
+      ctx.fillRect(0, height * 0.6, width, height * 0.4);
+    }
   } else {
     const base = ctx.createLinearGradient(0, 0, width, height);
-    base.addColorStop(0, "rgba(14, 26, 62, 1)");
-    base.addColorStop(0.48, "rgba(24, 45, 95, 1)");
-    base.addColorStop(1, "rgba(16, 31, 74, 1)");
+    base.addColorStop(0, printMode ? "rgba(12, 24, 58, 1)" : "rgba(14, 26, 62, 1)");
+    base.addColorStop(0.48, printMode ? "rgba(22, 42, 91, 1)" : "rgba(24, 45, 95, 1)");
+    base.addColorStop(1, printMode ? "rgba(14, 28, 69, 1)" : "rgba(16, 31, 74, 1)");
     ctx.fillStyle = base;
     ctx.fillRect(0, 0, width, height);
 
-    const glowA = ctx.createRadialGradient(width * 0.2, height * 0.22, 0, width * 0.2, height * 0.22, width * 0.6);
-    glowA.addColorStop(0, "rgba(133, 131, 235, 0.24)");
-    glowA.addColorStop(1, "rgba(133, 131, 235, 0)");
-    ctx.fillStyle = glowA;
-    ctx.fillRect(0, 0, width, height);
+    if (!printMode) {
+      const glowA = ctx.createRadialGradient(width * 0.2, height * 0.22, 0, width * 0.2, height * 0.22, width * 0.6);
+      glowA.addColorStop(0, "rgba(133, 131, 235, 0.24)");
+      glowA.addColorStop(1, "rgba(133, 131, 235, 0)");
+      ctx.fillStyle = glowA;
+      ctx.fillRect(0, 0, width, height);
 
-    const glowB = ctx.createRadialGradient(width * 0.78, height * 0.66, 0, width * 0.78, height * 0.66, width * 0.52);
-    glowB.addColorStop(0, "rgba(109, 182, 255, 0.17)");
-    glowB.addColorStop(1, "rgba(109, 182, 255, 0)");
-    ctx.fillStyle = glowB;
-    ctx.fillRect(0, 0, width, height);
+      const glowB = ctx.createRadialGradient(width * 0.78, height * 0.66, 0, width * 0.78, height * 0.66, width * 0.52);
+      glowB.addColorStop(0, "rgba(109, 182, 255, 0.17)");
+      glowB.addColorStop(1, "rgba(109, 182, 255, 0)");
+      ctx.fillStyle = glowB;
+      ctx.fillRect(0, 0, width, height);
+    }
 
     stars.forEach((star) => {
       const twinkle = reducedMotion ? 1 : 0.7 + Math.sin(timeSec * 0.9 + star.phase) * 0.3;
-      ctx.globalAlpha = star.alpha * twinkle;
+      ctx.globalAlpha = printMode ? Math.min(1, star.alpha * 1.25) : star.alpha * twinkle;
       ctx.beginPath();
       ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(233, 242, 255, 1)";
@@ -865,11 +880,13 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
     });
     ctx.globalAlpha = 1;
 
-    const floorGlow = ctx.createLinearGradient(0, height * 0.52, 0, height);
-    floorGlow.addColorStop(0, "rgba(196, 172, 255, 0)");
-    floorGlow.addColorStop(1, "rgba(196, 172, 255, 0.08)");
-    ctx.fillStyle = floorGlow;
-    ctx.fillRect(0, height * 0.52, width, height * 0.48);
+    if (!printMode) {
+      const floorGlow = ctx.createLinearGradient(0, height * 0.52, 0, height);
+      floorGlow.addColorStop(0, "rgba(196, 172, 255, 0)");
+      floorGlow.addColorStop(1, "rgba(196, 172, 255, 0.08)");
+      ctx.fillStyle = floorGlow;
+      ctx.fillRect(0, height * 0.52, width, height * 0.48);
+    }
   }
 
   if (!flatCornersForExport) {
@@ -1155,7 +1172,12 @@ export function initHeroPreview5Showcase(containerEl, { reducedMotion = false } 
   function resize(force = false) {
     const nextWidth = Math.max(1, Math.round(containerEl.clientWidth || 0));
     const nextHeight = Math.max(1, Math.round(containerEl.clientHeight || 0));
-    const nextDpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+    const exportMaxDpr =
+      typeof window !== "undefined" && Number.isFinite(Number(window.__NEOWATT_EXPORT_MAX_DPR))
+        ? Number(window.__NEOWATT_EXPORT_MAX_DPR)
+        : MAX_DPR;
+    const maxDpr = Math.max(1, exportMaxDpr);
+    const nextDpr = Math.min(window.devicePixelRatio || 1, maxDpr);
     const widthChanged = nextWidth !== width || nextHeight !== height;
     const dprChanged = nextDpr !== dpr;
 

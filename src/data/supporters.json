@@ -10,5 +10,17 @@
     "name": "e-spark",
     "logoPath": "./assets/images/supporters/e-spark-logo.png",
     "url": "https://www.entrepreneurial-spark.com/"
+  },
+  {
+    "id": "5050",
+    "name": "5050",
+    "logoPath": "./assets/images/supporters/5050-logo.png",
+    "url": "https://fiftyyears.com/5050"
+  },
+  {
+    "id": "barclays-eagle-labs",
+    "name": "Barclays Eagle Labs",
+    "logoPath": "./assets/images/supporters/barclays-eagle-labs-logo.png",
+    "url": "https://labs.uk.barclays/"
   }
 ]

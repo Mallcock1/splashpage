@@ -17,6 +17,8 @@ test("export preview-5 hero stills", async ({ page }) => {
 
   await page.addInitScript(() => {
     window.__NEOWATT_EXPORT_FLAT_CORNERS = true;
+    window.__NEOWATT_EXPORT_MAX_DPR = 6;
+    window.__NEOWATT_PRINT_EXPORT = true;
   });
 
   await page.goto("/", { waitUntil: "networkidle" });
