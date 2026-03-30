@@ -4,6 +4,7 @@ const MAX_DPR = 2;
 const SWIPE_THRESHOLD_PX = 36;
 const SWIPE_COMMIT_PROGRESS = 0.22;
 const SWIPE_SETTLE_MS = 260;
+const HERO_VISUAL_RADIUS_PX = 28;
 
 function isPrintExport() {
   return typeof window !== "undefined" && window.__NEOWATT_PRINT_EXPORT === true;
@@ -798,8 +799,9 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
   const printMode = isPrintExport();
   const flatCornersForExport =
     typeof window !== "undefined" && window.__NEOWATT_EXPORT_FLAT_CORNERS === true;
-  if (!flatCornersForExport) {
-    const radius = Math.min(width, height) * 0.08;
+  const shouldClipRoundedBackdrop = printMode && !flatCornersForExport;
+  if (shouldClipRoundedBackdrop) {
+    const radius = Math.min(HERO_VISUAL_RADIUS_PX, width * 0.5, height * 0.5);
     roundedRectPath(ctx, 0, 0, width, height, radius);
     ctx.save();
     ctx.clip();
@@ -889,7 +891,7 @@ function drawBackdrop(ctx, width, height, timeSec, stars, reducedMotion, theme =
     }
   }
 
-  if (!flatCornersForExport) {
+  if (shouldClipRoundedBackdrop) {
     ctx.restore();
   }
 }
