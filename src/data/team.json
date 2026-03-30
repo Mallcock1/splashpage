@@ -4,10 +4,10 @@
     "name": "Matthew Allcock",
     "role": "Co-founder",
     "highlights": [
-      "Decade of experience in space and energy.",
-      "PhD in solar physics.",
-      "Space weather risk and environment modelling.",
-      "Space systems engineering and critical infrastructure."
+      "PhD in solar physics @ University of Sheffield / Monash University.",
+      "Consultant and advisor in space weather.",
+      "Managed low probability, high impact risks to nuclear power @ EDF Energy.",
+      "Space systems engineering, critical infrastructure, and space weather @ Starion."
     ],
     "photoPath": "./assets/images/team/matthew-allcock.jpg",
     "links": [
@@ -23,8 +23,8 @@
   },
   {
     "id": "cofounder-stealth",
-    "name": "Stealth",
-    "role": "Co-founder",
+    "name": "Co-founder",
+    "role": "",
     "highlights": [
       "PhD in RF engineering.",
       "Particle accelerator physics.",

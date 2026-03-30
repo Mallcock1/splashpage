@@ -169,7 +169,7 @@ function renderTeam() {
       <img class="team-photo" src="${person.photoPath}" alt="${person.name}" loading="lazy" onerror="this.src='./assets/images/team/cofounder-placeholder.svg'" />
       <div class="team-content">
         <h3 class="person-name">${person.name}</h3>
-        <p class="person-role">${person.role}</p>
+        ${person.role ? `<p class="person-role">${person.role}</p>` : ""}
         ${highlights ? `<ul class="person-highlights">${highlights}</ul>` : ""}
         ${links ? `<p class="person-links">${links}</p>` : ""}
       </div>
