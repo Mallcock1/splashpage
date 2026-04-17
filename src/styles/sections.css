@@ -469,31 +469,6 @@ section p {
   background: rgba(28, 46, 96, 0.88);
 }
 
-.image-compare.is-slider-hint .image-compare-divider {
-  animation: slider-divider-wobble 1150ms ease-in-out 1;
-}
-
-@keyframes slider-divider-wobble {
-  0% {
-    transform: translateX(-1px);
-  }
-  18% {
-    transform: translateX(-14px);
-  }
-  36% {
-    transform: translateX(12px);
-  }
-  54% {
-    transform: translateX(-9px);
-  }
-  72% {
-    transform: translateX(6px);
-  }
-  100% {
-    transform: translateX(-1px);
-  }
-}
-
 .image-compare-slider {
   position: absolute;
   inset: 0;

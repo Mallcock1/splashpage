@@ -176,6 +176,20 @@ function renderTeam() {
     `;
     grid.append(card);
   });
+
+  const experience = document.createElement("aside");
+  experience.className = "team-experience-card";
+  experience.setAttribute("aria-label", "Collective team experience");
+  experience.innerHTML = `
+    <h3>Team experience</h3>
+    <ul class="person-highlights">
+      <li>PhD in RF engineering.</li>
+      <li>Particle accelerator physics.</li>
+      <li>Satcom product engineering.</li>
+      <li>Scaling innovative space technology.</li>
+    </ul>
+  `;
+  grid.append(experience);
 }
 
 function initHeroVisual() {
